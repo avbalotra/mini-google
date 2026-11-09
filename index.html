@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Google 1998</title>
+  <title>Mini Google 1998 · Lumen 2040</title>
   <style>
-    /* CSS Variables */
+    /* ---------- 1. Design Tokens & Palette (Lumen 2040) ---------- */
     :root {
-      --bg: #F7F8FA;
-      --card: #FFFFFF;
-      --ink: #14161A;
-      --muted: #6B7280;
-      --line: #E4E7EC;
-      --blue: #4285F4;
-      --red: #EA4335;
-      --yellow: #FBBC05;
-      --green: #34A853;
-      --mark: #FFE9A8;
-      --radius: 14px;
-      --shadow: 0 1px 2px rgba(20,22,26,.05), 0 6px 20px rgba(20,22,26,.05);
+      --ceramic: #F2F0F7;
+      --glass: rgba(255, 255, 255, 0.72);
+      --glass-panel: rgba(255, 255, 255, 0.55);
+      --ink: #1C1B29;
+      --mute: #6C6A80;
+      --hair: rgba(28, 27, 41, 0.10);
+      --iris-a: #6E7BFF;
+      --iris-b: #35D0C5;
+      --iris-c: #FF8FB1;
+      --iris-d: #FFD27A;
+      --radius-sm: 4px;
+      --radius-lg: 24px;
+      --font-stack: "SF Pro Display", "Segoe UI Variable Display", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     }
 
-    /* Reset and Base Styles */
+    /* ---------- 2. Base & Ambient Spatial Canvas ---------- */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -29,13 +30,47 @@
     }
 
     body {
-      background-color: var(--bg);
+      background-color: var(--ceramic);
       color: var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: var(--font-stack);
       font-size: 16px;
-      line-height: 1.55;
-      padding: 40px 24px 64px 24px;
+      line-height: 1.6;
+      padding: 48px 24px 80px 24px;
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Aurora atmospheric light drift */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -25%;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(110, 123, 255, 0.13) 0%, transparent 45%),
+        radial-gradient(circle at 82% 28%, rgba(53, 208, 197, 0.13) 0%, transparent 42%),
+        radial-gradient(circle at 50% 82%, rgba(255, 143, 177, 0.11) 0%, transparent 48%),
+        radial-gradient(circle at 75% 72%, rgba(255, 210, 122, 0.09) 0%, transparent 38%);
+      animation: auroraDrift 60s ease-in-out infinite alternate;
+    }
+
+    @keyframes auroraDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-3%, 4%) scale(1.04); }
+      100% { transform: translate(4%, -2%) scale(0.98); }
+    }
+
+    /* Ambient dot-grid texture */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(28, 27, 41, 0.045) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
 
     .container {
@@ -43,149 +78,281 @@
       margin: 0 auto;
     }
 
-    /* Logo */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ---------- 3. Header & Holographic Logo ---------- */
     .header-area {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
     .logo {
-      font-family: "ui-rounded", "Trebuchet MS", "Segoe UI", sans-serif;
-      font-size: clamp(2.4rem, 7vw, 4rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      user-select: none;
-    }
-
-    .logo-letter {
+      font-size: clamp(2.6rem, 7vw, 4.4rem);
+      font-weight: 250;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
       display: inline-block;
-      opacity: 0;
-      animation: letterRise 400ms ease-out forwards;
+      user-select: none;
+      background: linear-gradient(135deg, var(--iris-a), var(--iris-b) 45%, var(--iris-c) 75%, var(--iris-d));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: var(--iris-a);
     }
 
-    @keyframes letterRise {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .logo-tag {
+      font-size: 0.38em;
+      font-weight: 300;
+      vertical-align: super;
+      letter-spacing: 0.02em;
+      margin-left: 6px;
+      opacity: 0.9;
     }
 
-    /* Search Bar */
-    .search-wrap {
-      max-width: 600px;
+    /* ---------- 4. Command Capsule Search & Controls ---------- */
+    .command-capsule {
+      max-width: 620px;
       margin: 0 auto 16px auto;
       position: relative;
+      display: flex;
+      align-items: center;
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--hair);
+      border-radius: 9999px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 8px 28px rgba(28, 27, 41, 0.05);
+      transition: border-color 250ms ease, box-shadow 250ms ease;
+    }
+
+    .command-capsule:focus-within {
+      border-color: transparent;
+      box-shadow: 0 0 0 2px var(--ceramic), 0 0 0 4px var(--iris-a), 0 12px 32px rgba(110, 123, 255, 0.15);
     }
 
     .search-input {
-      width: 100%;
-      height: 48px;
-      padding: 0 110px 0 20px;
-      border-radius: 9999px;
-      border: 1px solid var(--line);
-      background: var(--card);
-      font-size: 1rem;
+      flex: 1;
+      height: 52px;
+      padding: 0 60px 0 24px;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 1.05rem;
       color: var(--ink);
-      box-shadow: 0 1px 3px rgba(20,22,26,.06);
       outline: none;
-      transition: border-color 200ms ease, box-shadow 200ms ease;
     }
 
-    .search-input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.25), 0 2px 6px rgba(20,22,26,.06);
+    .search-input::placeholder {
+      color: var(--mute);
+      opacity: 0.75;
     }
 
     .search-btn {
       position: absolute;
-      right: 5px;
-      top: 5px;
-      height: 38px;
-      padding: 0 20px;
-      border-radius: 9999px;
+      right: 6px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       border: none;
-      background: var(--blue);
+      background: linear-gradient(135deg, var(--iris-a), var(--iris-b));
       color: #FFFFFF;
-      font-size: 0.95rem;
-      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      transition: background-color 200ms ease, opacity 200ms ease;
+      box-shadow: 0 2px 8px rgba(110, 123, 255, 0.3);
+      transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
     }
 
     .search-btn:hover {
-      background: #3367D6;
+      transform: scale(1.06);
+      box-shadow: 0 4px 14px rgba(110, 123, 255, 0.45);
     }
 
     .search-btn:active {
-      background: #2A56C6;
+      transform: scale(0.96);
     }
 
-    /* Interactive Controls & Examples */
     .controls-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .example-btn, .surfer-btn {
-      height: 32px;
-      padding: 0 14px;
+      height: 34px;
+      padding: 0 16px;
       border-radius: 9999px;
-      border: 1px solid var(--line);
-      background: var(--card);
+      border: 1px solid var(--hair);
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       color: var(--ink);
-      font-size: 0.85rem;
+      font-family: inherit;
+      font-size: 0.88rem;
       cursor: pointer;
-      box-shadow: 0 1px 2px rgba(20,22,26,.04);
-      transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+      box-shadow: 0 2px 6px rgba(28, 27, 41, 0.03);
+      transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
     }
 
     .example-btn:hover, .surfer-btn:hover:not(:disabled) {
-      background: #EEF1F6;
-      border-color: #D0D5DD;
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(110, 123, 255, 0.35);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(110, 123, 255, 0.12);
     }
 
     .surfer-btn:disabled {
-      opacity: 0.6;
+      opacity: 0.55;
       cursor: not-allowed;
+      transform: none;
     }
 
     :focus-visible {
-      outline: 2px solid var(--blue);
-      outline-offset: 2px;
+      outline: 2px solid var(--iris-a);
+      outline-offset: 3px;
     }
 
-    /* Status Line */
     .status-text {
       text-align: center;
       font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 32px;
+      color: var(--mute);
+      margin-bottom: 24px;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Hint / Empty State Messages */
-    .message-card {
-      text-align: center;
-      padding: 32px 24px;
-      font-size: 1rem;
-      color: var(--muted);
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      max-width: 600px;
-      margin: 0 auto;
+    /* ---------- 5. Topological Web Map ---------- */
+    .map-card {
+      background: var(--glass-panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px 20px 20px;
+      margin-bottom: 36px;
+      box-shadow: 0 8px 32px rgba(28, 27, 41, 0.04);
+      position: relative;
     }
 
-    /* Results Layout */
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 0 8px;
+    }
+
+    .map-label {
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      color: var(--mute);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .map-sub {
+      font-size: 0.82rem;
+      color: var(--mute);
+      opacity: 0.8;
+    }
+
+    #web-map {
+      width: 100%;
+      height: 250px;
+      display: block;
+      overflow: visible;
+    }
+
+    .map-link {
+      fill: none;
+      stroke: rgba(110, 123, 255, 0.18);
+      stroke-width: 1.2px;
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: drawLink 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transition: stroke 250ms ease, opacity 250ms ease;
+    }
+
+    @keyframes drawLink {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .map-node {
+      cursor: pointer;
+      outline: none;
+      transition: opacity 350ms ease, transform 350ms ease;
+    }
+
+    .node-halo {
+      fill: var(--iris-a);
+      opacity: 0.18;
+      transition: r 600ms ease-out, opacity 300ms ease;
+    }
+
+    .node-body {
+      fill: #FFFFFF;
+      stroke: var(--iris-b);
+      stroke-width: 2px;
+      transition: r 600ms ease-out, stroke 300ms ease, fill 300ms ease;
+    }
+
+    .node-txt {
+      font-family: var(--font-stack);
+      font-size: 10px;
+      font-weight: 600;
+      fill: var(--ink);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .map-node:hover .node-halo, .map-node.node-highlight .node-halo {
+      opacity: 0.45;
+      fill: var(--iris-c);
+    }
+
+    .map-node:hover .node-body, .map-node.node-highlight .node-body {
+      stroke: var(--iris-a);
+      stroke-width: 2.5px;
+    }
+
+    @keyframes nodePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.35); }
+      100% { transform: scale(1); }
+    }
+
+    .map-node.node-match .node-body {
+      animation: nodePulse 650ms cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: center;
+      stroke: var(--iris-a);
+    }
+
+    .map-node.hop-pulse .node-body {
+      animation: nodePulse 320ms ease-out;
+      transform-origin: center;
+      stroke: var(--iris-c);
+      fill: rgba(255, 210, 122, 0.25);
+    }
+
+    #surfer-particle {
+      pointer-events: none;
+      transition: cx 55ms linear, cy 55ms linear;
+    }
+
+    /* ---------- 6. Results Layout & Lens Columns ---------- */
     .results-grid {
       display: none;
       grid-template-columns: 1fr 1fr;
@@ -200,97 +367,64 @@
       }
     }
 
-    /* Column Headers */
     .col-header {
       margin-bottom: 24px;
     }
 
     .col-title {
-      font-family: "ui-rounded", "Trebuchet MS", "Segoe UI", sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: inline-block;
-      padding-bottom: 6px;
+      font-size: 1.55rem;
+      font-weight: 300;
+      letter-spacing: -0.02em;
       margin-bottom: 4px;
-    }
-
-    .col-old .col-title {
-      border-bottom: 3px solid #9CA3AF;
-    }
-
-    .col-surfer .col-title {
-      border-bottom: 3px solid var(--green);
+      color: var(--ink);
     }
 
     .col-caption {
-      font-size: 0.9rem;
-      color: var(--muted);
+      font-size: 0.88rem;
+      color: var(--mute);
     }
 
-    /* Result Cards */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      margin-bottom: 16px;
-      opacity: 0;
-      animation: cardAppear 300ms ease-out forwards;
-      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
-    }
-
-    @keyframes cardAppear {
-      from {
+    /* Card Motion (Focus-in Blur to Sharp) */
+    @keyframes paneFocusIn {
+      0% {
         opacity: 0;
-        transform: translateY(8px);
+        filter: blur(12px);
+        transform: scale(0.97);
       }
-      to {
+      100% {
         opacity: 1;
-        transform: translateY(0);
+        filter: blur(0);
+        transform: scale(1);
       }
     }
 
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: #D0D5DD;
-      box-shadow: 0 4px 6px rgba(20,22,26,.06), 0 10px 24px rgba(20,22,26,.08);
+    .pane-enter {
+      opacity: 0;
+      animation: paneFocusIn 420ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    @keyframes oldPulse {
-      0% { border-color: var(--line); }
-      50% { border-color: #9CA3AF; }
-      100% { border-color: var(--line); }
+    /* Card Base */
+    .card {
+      padding: 22px;
+      margin-bottom: 20px;
+      position: relative;
     }
 
-    @keyframes surferPulse {
-      0% { border-color: var(--line); }
-      50% { border-color: var(--green); }
-      100% { border-color: var(--line); }
-    }
-
-    .col-old .top-card {
-      animation: cardAppear 300ms ease-out forwards, oldPulse 700ms ease-out 350ms 1;
-    }
-
-    .col-surfer .top-card {
-      animation: cardAppear 300ms ease-out forwards, surferPulse 700ms ease-out 350ms 1;
-    }
-
-    .card-header {
+    .card-top {
       display: flex;
       align-items: flex-start;
       gap: 16px;
       margin-bottom: 12px;
     }
 
-    .rank-badge {
-      color: var(--blue);
-      font-family: "ui-rounded", "Trebuchet MS", "Segoe UI", sans-serif;
-      font-size: 1.8rem;
-      font-weight: 300;
+    .card-rank {
+      font-size: 2.2rem;
+      font-weight: 200;
       line-height: 1;
-      min-width: 36px;
+      opacity: 0.35;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+      min-width: 44px;
     }
 
     .card-meta {
@@ -300,76 +434,264 @@
     .card-url {
       display: block;
       font-size: 0.85rem;
-      color: var(--muted);
+      color: var(--mute);
       word-break: break-all;
-      margin-bottom: 4px;
-    }
-
-    .score-label {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--ink);
       margin-bottom: 6px;
     }
 
-    .bar-track {
-      width: 100%;
-      height: 6px;
-      background: #EEF1F6;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 600ms ease-out;
-    }
-
-    .bar-old {
-      background: #9CA3AF;
-    }
-
-    .bar-surfer {
-      background: var(--green);
-    }
-
-    .card-text {
+    .card-body {
       font-size: 0.95rem;
-      line-height: 1.55;
+      line-height: 1.6;
       color: var(--ink);
       max-width: 70ch;
       word-break: break-word;
     }
 
-    mark {
-      background-color: var(--mark);
-      border-radius: 3px;
-      padding: 1px 3px;
-      font-weight: normal;
-      color: inherit;
+    /* Left Column: Old Way (Archive Lens) */
+    .card-old {
+      background: #FFFFFF;
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      transition: border-color 200ms ease;
     }
 
-    /* Reduced Motion */
+    .card-old:hover, .card-old.card-highlight {
+      border-color: var(--mute);
+    }
+
+    .card-old .card-score {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .lens-watermark {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--mute);
+      opacity: 0.22;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .sq-bar {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+
+    .sq-unit {
+      width: 6px;
+      height: 6px;
+      background: #8F8DA0;
+      border-radius: 1px;
+    }
+
+    .sq-more {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--mute);
+      line-height: 1;
+    }
+
+    mark.mark-old {
+      background: transparent;
+      border-bottom: 2px solid var(--ink);
+      color: inherit;
+      padding: 0;
+      font-weight: inherit;
+    }
+
+    /* Right Column: Surfer Way (Depth Lens) */
+    .card-surfer {
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 4px 18px rgba(28, 27, 41, 0.03), 0 16px 40px rgba(110, 123, 255, 0.07);
+      transition: box-shadow 300ms ease, transform 150ms ease;
+      will-change: transform;
+    }
+
+    .card-surfer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-lg);
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(110, 123, 255, 0.4) 40%, rgba(53, 208, 197, 0.4) 70%, rgba(255, 143, 177, 0.4));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .card-surfer:hover, .card-surfer.card-highlight {
+      box-shadow: 0 8px 30px rgba(110, 123, 255, 0.16), 0 20px 50px rgba(53, 208, 197, 0.12);
+    }
+
+    .surfer-score-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 4px;
+    }
+
+    .ring-gauge {
+      flex-shrink: 0;
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: rgba(28, 27, 41, 0.08);
+      stroke-width: 3.5;
+    }
+
+    .ring-bar {
+      fill: none;
+      stroke: url(#iris-grad);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 138.23;
+      transform: rotate(-90deg);
+      transform-origin: 28px 28px;
+      transition: stroke-dashoffset 600ms ease-out;
+      filter: drop-shadow(0 0 4px rgba(110, 123, 255, 0.4));
+    }
+
+    .ring-txt {
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      fill: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .orbit-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      color: var(--mute);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .orbit-icon {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1px dashed var(--iris-b);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .orbit-icon::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 3.5px;
+      height: 3.5px;
+      background: var(--iris-a);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    mark.mark-surfer {
+      background: rgba(110, 123, 255, 0.15);
+      box-shadow: 0 0 10px rgba(110, 123, 255, 0.35);
+      border-radius: 6px;
+      padding: 1px 6px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* ---------- 7. Empty State & Lost Surfer ---------- */
+    .empty-glass {
+      text-align: center;
+      padding: 44px 24px;
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-lg);
+      max-width: 580px;
+      margin: 0 auto;
+      box-shadow: 0 8px 32px rgba(28, 27, 41, 0.04);
+    }
+
+    .lost-surfer {
+      display: block;
+      margin: 0 auto 16px auto;
+    }
+
+    .lost-orbit {
+      fill: none;
+      stroke: rgba(110, 123, 255, 0.25);
+      stroke-dasharray: 4 4;
+      animation: lostSpin 14s linear infinite;
+      transform-origin: 26px 26px;
+    }
+
+    @keyframes lostSpin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .lost-orb {
+      fill: var(--iris-c);
+      filter: drop-shadow(0 0 6px var(--iris-c));
+    }
+
+    .empty-txt {
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .empty-sub {
+      font-size: 0.9rem;
+      color: var(--mute);
+    }
+
+    /* ---------- 8. Reduced Motion ---------- */
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-      }
+      body::before { animation: none !important; }
+      .map-link { stroke-dashoffset: 0 !important; animation: none !important; }
+      #surfer-particle { display: none !important; }
+      .map-node, .node-body, .node-halo { animation: none !important; transition: none !important; }
+      .pane-enter { animation: none !important; opacity: 1 !important; filter: none !important; transform: none !important; }
+      .card-surfer { transform: none !important; transition: none !important; }
+      .ring-bar { transition: none !important; }
+      .lost-orbit { animation: none !important; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="header-area">
-      <h1 class="logo" id="logo">Mini Google 1998</h1>
+      <h1 class="logo">Mini Google<span class="logo-tag">1998</span></h1>
     </header>
 
     <main>
-      <div class="search-wrap">
-        <input type="text" id="search-input" class="search-input" placeholder="Search pages..." autocomplete="off">
-        <button type="button" id="search-btn" class="search-btn">Search</button>
+      <div class="command-capsule">
+        <input type="text" id="search-input" class="search-input" placeholder="Search the web..." autocomplete="off">
+        <button type="button" id="search-btn" class="search-btn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M3.5 9h11M10 4.5L14.5 9 10 13.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
 
       <div class="controls-row">
@@ -382,8 +704,37 @@
 
       <p id="status-text" class="status-text"></p>
 
-      <div id="hint-message" class="message-card">
-        Search for a word (or click an example above) to compare rankings.
+      <section class="map-card" aria-label="Topological web map">
+        <div class="map-header">
+          <span class="map-label">Topological web map</span>
+          <span class="map-sub">30-hop ambient trace</span>
+        </div>
+        <span class="sr-only">Map of 10 pages and links</span>
+        <svg id="web-map" viewBox="0 0 700 260" preserveAspectRatio="xMidYMid meet" aria-label="Interactive map of web pages and links">
+          <defs>
+            <filter id="node-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <linearGradient id="iris-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--iris-a)" />
+              <stop offset="50%" stop-color="var(--iris-b)" />
+              <stop offset="100%" stop-color="var(--iris-c)" />
+            </linearGradient>
+          </defs>
+          <g id="map-links"></g>
+          <g id="map-nodes"></g>
+          <circle id="surfer-particle" r="4.5" fill="var(--iris-b)" filter="url(#node-glow)" opacity="0"></circle>
+        </svg>
+      </section>
+
+      <div id="hint-message">
+        <div class="empty-glass">
+          <p class="empty-txt">Type a search word or select a capsule above to compare rankings.</p>
+        </div>
       </div>
 
       <section id="results-area" class="results-grid">
@@ -421,152 +772,221 @@ page,url,text,links_to
   </script>
 
   <script>
-// ---------- Settings ----------           MOVES = 100000, BORED = 0.15
+// ---------- Settings ----------       MOVES = 100000, BORED = 0.15
 const MOVES = 100000, BORED = 0.15;
 let pages = [], currentWord = '';
-// ---------- 1. Read the data ----------   readCSV(), build pages list, linksIn counts
-// Parse CSV lines handling quotes and escaped quotes
+// ---------- 1. Read the data ----------     readCSV(), pages list, linksIn counts
+// Parse raw CSV text handling quotes and double-quote escapes
 function readCSV(text) {
   const lines = text.trim().split(/\r?\n/), rows = [];
-  // Step 1: Parse each line after the header
+  // Step 1: Process each line after header
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
-    let values = [], current = '', insideQuotes = false;
+    let values = [], cur = '', inQuotes = false;
     for (let c = 0; c < line.length; c++) {
       const ch = line[c];
       if (ch === '"') {
-        if (insideQuotes && line[c + 1] === '"') { current += '"'; c++; } else insideQuotes = !insideQuotes;
-      } else if (ch === ',' && !insideQuotes) { values.push(current); current = ''; } else current += ch;
+        if (inQuotes && line[c + 1] === '"') { cur += '"'; c++; } else inQuotes = !inQuotes;
+      } else if (ch === ',' && !inQuotes) { values.push(cur); cur = ''; } else cur += ch;
     }
-    values.push(current);
+    values.push(cur);
     rows.push({ page: parseInt(values[0], 10), url: values[1], text: values[2], links_to: values[3] || '' });
   }
   return rows;
 }
-// Build structured pages and count incoming links
+// Build page objects, resolve valid links, and count unique incoming links
 function buildPages() {
-  const rows = readCSV(document.getElementById('data').textContent), pageMap = {};
-  // Step 1: Initialize page objects
+  const rows = readCSV(document.getElementById('data').textContent), map = {};
+  // Step 1: Create initial page records
   pages = rows.map(r => {
     const raw = r.links_to ? r.links_to.split(';').map(n => parseInt(n.trim(), 10)).filter(n => !isNaN(n)) : [];
-    const p = { page: r.page, url: r.url, text: r.text, rawLinks: raw, validLinks: [], validIndices: [], linksIn: 0, visits: 0, surferScore: 0 };
-    pageMap[p.page] = p; return p;
+    const p = { page: r.page, url: r.url, text: r.text, rawLinks: raw, validLinks: [], validIndices: [], linksIn: 0, visits: 0, surferScore: 0, x: 0, y: 0 };
+    map[p.page] = p; return p;
   });
-  // Step 2: Validate links and count unique incoming links
+  // Step 2: Validate links and count incoming (Decision 3: Ignore links not in data; Decision 4: 'Links in: N' = unique source pages)
   pages.forEach(p => {
-    // Decision 3: Ignore links that point to page numbers not in the data
-    p.validLinks = p.rawLinks.filter(id => pageMap[id] !== undefined);
+    p.validLinks = p.rawLinks.filter(id => map[id] !== undefined);
     p.validIndices = p.validLinks.map(id => pages.findIndex(target => target.page === id));
-    // Decision 4: 'Links in: N' = number of DIFFERENT pages that link to that page
-    new Set(p.validLinks).forEach(destId => pageMap[destId].linksIn++);
+    new Set(p.validLinks).forEach(destId => map[destId].linksIn++);
   });
 }
-// ---------- 2. The random surfer ----------   runSurfer()
-// Simulate random surfer moves over pages
+// ---------- 2. The random surfer ----------    runSurfer()
+// Simulate 100,000 surfer moves computed instantly in code
 function runSurfer() {
-  // Step 1: Reset all visit counts
+  // Step 1: Reset visits and pick starting page at random
   for (let i = 0; i < pages.length; i++) pages[i].visits = 0;
-  // Step 2: Pick an initial page at random
-  let curIndex = Math.floor(Math.random() * pages.length);
-  // Step 3: Run 100,000 steps
-  for (let step = 0; step < MOVES; step++) {
-    const cur = pages[curIndex];
-    // Decision 2: If the current page has no links, treat it as a bored jump to a random page
-    if (Math.random() < BORED || cur.validIndices.length === 0) curIndex = Math.floor(Math.random() * pages.length);
-    else curIndex = cur.validIndices[Math.floor(Math.random() * cur.validIndices.length)];
-    // Decision 1: Count the page the surfer lands on after each move (starting page is not counted)
-    pages[curIndex].visits++;
+  let cur = Math.floor(Math.random() * pages.length);
+  // Step 2: Run 100,000 hops (Decision 1: Count landing page; starting page not counted; Decision 2: No links = bored jump)
+  for (let s = 0; s < MOVES; s++) {
+    const p = pages[cur];
+    cur = (Math.random() < BORED || p.validIndices.length === 0) ? Math.floor(Math.random() * pages.length) : p.validIndices[Math.floor(Math.random() * p.validIndices.length)];
+    pages[cur].visits++;
   }
-  // Step 4: Calculate score percentages
+  // Step 3: Compute score percentages (scores sum to 100%)
   for (let i = 0; i < pages.length; i++) pages[i].surferScore = (pages[i].visits / MOVES) * 100;
 }
-// ---------- 3. Ranking helpers ----------  escapeHTML(), countWord(), highlight()
-// Escape HTML special characters
+// ---------- 3. Ranking helpers ----------      escapeHTML(), countWord(), highlight()
+// Escape HTML entities to prevent injection
 function escapeHTML(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 // Count whole-word matches ignoring case
 function countWord(text, word) {
   if (!word) return 0;
-  const matches = text.match(new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi'));
-  return matches ? matches.length : 0;
+  const m = text.match(new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi'));
+  return m ? m.length : 0;
 }
-// Highlight whole-word matches preserving original casing
-function highlight(text, word) {
+// Highlight search word: isOld uses flat ink underline, !isOld uses iridescent glow pill
+function highlight(text, word, isOld) {
   if (!word) return escapeHTML(text);
-  return escapeHTML(text).replace(new RegExp('(\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b)', 'gi'), '<mark>$1</mark>');
+  const re = new RegExp('(\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b)', 'gi');
+  return escapeHTML(text).replace(re, `<mark class="${isOld ? 'mark-old' : 'mark-surfer'}">$1</mark>`);
 }
-// Build card HTML string
-function renderCard(p, rank, scoreLabel, barWidth, isOld, word, delay) {
-  const topClass = rank === 1 ? ' top-card' : '', barClass = isOld ? 'bar-old' : 'bar-surfer';
-  return `<article class="card${topClass}" style="animation-delay:${delay}ms"><div class="card-header"><span class="rank-badge">#${rank}</span><div class="card-meta"><span class="card-url">${escapeHTML(p.url)}</span><span class="score-label">${scoreLabel}</span><div class="bar-track"><div class="bar-fill ${barClass}" style="width:0%" data-width="${barWidth}%"></div></div></div></div><p class="card-text">${highlight(p.text, word)}</p></article>`;
+// ---------- 4. Web map ----------      drawMap(), updateMap(), replaySurfer()
+// Draw SVG map with circular ring layout and curved link threads
+function drawMap() {
+  const N = pages.length, cx = 350, cy = 130, R = 90;
+  // Step 1: Calculate coordinates on circular ring
+  pages.forEach((p, i) => {
+    const angle = (i / N) * 2 * Math.PI - Math.PI / 2;
+    p.x = Math.round(cx + R * Math.cos(angle)); p.y = Math.round(cy + R * Math.sin(angle));
+  });
+  // Step 2: Draw curved link threads
+  let linkSvg = '';
+  pages.forEach(p => p.validLinks.forEach(destId => {
+    const dest = pages.find(target => target.page === destId);
+    if (dest) linkSvg += `<path class="map-link" d="M ${p.x} ${p.y} Q ${cx} ${cy} ${dest.x} ${dest.y}"/>`;
+  }));
+  document.getElementById('map-links').innerHTML = linkSvg;
+  // Step 3: Draw interactive nodes with hover listeners
+  document.getElementById('map-nodes').innerHTML = pages.map(p => {
+    const r = Math.min(14, Math.max(4, 4 + (p.surferScore / 25) * 10));
+    return `<g class="map-node" data-page="${p.page}" tabindex="0"><circle class="node-halo" cx="${p.x}" cy="${p.y}" r="${r + 4}"/><circle class="node-body" cx="${p.x}" cy="${p.y}" r="${r}"/><text class="node-txt" x="${p.x}" y="${p.y + 3}">${p.page}</text></g>`;
+  }).join('');
+  document.getElementById('map-nodes').querySelectorAll('.map-node').forEach(node => {
+    ['mouseenter', 'focus'].forEach(ev => node.addEventListener(ev, () => toggleCardHighlight(node.dataset.page, true)));
+    ['mouseleave', 'blur'].forEach(ev => node.addEventListener(ev, () => toggleCardHighlight(node.dataset.page, false)));
+  });
 }
-// ---------- 4. Show the results ----------  showResults(), search()
-// Render results in Old way and Surfer way columns
+// Update node opacities, sizes, and pulsing for search query matches
+function updateMap(matchingIds) {
+  document.querySelectorAll('.map-node').forEach(node => {
+    const pid = parseInt(node.dataset.page, 10), p = pages.find(item => item.page === pid);
+    if (!p) return;
+    const r = Math.min(14, Math.max(4, 4 + (p.surferScore / 25) * 10));
+    node.querySelector('.node-body').setAttribute('r', r);
+    node.querySelector('.node-halo').setAttribute('r', r + 4);
+    if (!matchingIds) { node.style.opacity = '1'; node.classList.remove('node-match'); }
+    else if (matchingIds.includes(pid)) { node.style.opacity = '1'; node.classList.add('node-match'); }
+    else { node.style.opacity = '0.25'; node.classList.remove('node-match'); }
+  });
+}
+// Replay ~30 hops of the random surfer visually across threads without changing scores
+function replaySurfer() {
+  const pEl = document.getElementById('surfer-particle');
+  if (!pEl || pages.length === 0) return;
+  pEl.style.opacity = '1';
+  let cur = Math.floor(Math.random() * pages.length), hops = 0;
+  function hop() {
+    if (hops >= 30) { setTimeout(() => { pEl.style.opacity = '0.4'; }, 300); return; }
+    const p = pages[cur];
+    pEl.setAttribute('cx', p.x); pEl.setAttribute('cy', p.y);
+    const n = document.querySelector(`.map-node[data-page="${p.page}"]`);
+    if (n) { n.classList.remove('hop-pulse'); void n.offsetWidth; n.classList.add('hop-pulse'); }
+    cur = (Math.random() < BORED || p.validIndices.length === 0) ? Math.floor(Math.random() * pages.length) : p.validIndices[Math.floor(Math.random() * p.validIndices.length)];
+    hops++; setTimeout(hop, 55);
+  }
+  hop();
+}
+// ---------- 5. Show the results ----------     showResults(), search(), ringGauge(), squareBar()
+// Render SVG ring gauge for surfer percentage
+function ringGauge(score, maxScore) {
+  const pct = maxScore > 0 ? (score / maxScore) : 0, offset = (138.23 * (1 - pct)).toFixed(1);
+  return `<svg class="ring-gauge" viewBox="0 0 56 56" width="56" height="56"><circle cx="28" cy="28" r="22" class="ring-bg"/><circle cx="28" cy="28" r="22" class="ring-bar" style="stroke-dashoffset:${offset}"/><text x="28" y="32" text-anchor="middle" class="ring-txt">${score.toFixed(1)}%</text></svg>`;
+}
+// Render square segmented bar for word counts
+function squareBar(count) {
+  let sqs = ''; for (let i = 0; i < Math.min(count, 20); i++) sqs += '<span class="sq-unit"></span>';
+  return `<div class="sq-bar">${sqs}${count > 20 ? '<span class="sq-more">+</span>' : ''}</div>`;
+}
+// Toggle card and map node cross-highlighting
+function toggleCardHighlight(pid, on) {
+  document.querySelectorAll(`.card[data-page="${pid}"]`).forEach(c => c.classList.toggle('card-highlight', on));
+  const node = document.querySelector(`.map-node[data-page="${pid}"]`);
+  if (node) node.classList.toggle('node-highlight', on);
+}
+// Render Old way and Surfer way result cards
 function showResults(word) {
   const resultsArea = document.getElementById('results-area'), hint = document.getElementById('hint-message');
   const matches = pages.filter(p => countWord(p.text, word) > 0);
-  // Step 1: Show funny empty state if no matches
+  // Step 1: Empty state handling with lost surfer illustration
   if (matches.length === 0) {
     resultsArea.style.display = 'none';
-    hint.innerHTML = `No pages found matching "<strong>${escapeHTML(word)}</strong>". Even our 1998 web crawler came up empty-handed! 🕸️`;
-    hint.style.display = 'block'; return;
+    hint.innerHTML = `<div class="empty-glass"><svg class="lost-surfer" width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" class="lost-orbit"/><circle cx="26" cy="6" r="4" class="lost-orb"/></svg><p class="empty-txt">The surfer searched all pages and found no “<strong>${escapeHTML(word)}</strong>”.</p><p class="empty-sub">It is now lost drifting through hyperspace in the year 2040. 🌌</p></div>`;
+    hint.style.display = 'block'; updateMap([]); return;
   }
   hint.style.display = 'none'; resultsArea.style.display = 'grid';
-  // Step 2: Sort Old way by word count descending (ties keep data order)
+  updateMap(matches.map(p => p.page));
+  // Step 2: Render Old way cards (flat archive lens)
   const oldRanked = matches.map(p => ({ p, count: countWord(p.text, word) })).sort((a, b) => b.count - a.count);
-  const maxCount = oldRanked[0].count;
   document.getElementById('old-way-list').innerHTML = oldRanked.map((item, i) =>
-    renderCard(item.p, i + 1, 'Word count: ' + item.count, ((item.count / maxCount) * 100).toFixed(1), true, word, Math.min(i * 50, 400))
+    `<article class="card card-old pane-enter" data-page="${item.p.page}" style="animation-delay:${Math.min(i * 50, 400)}ms"><span class="lens-watermark">1997</span><div class="card-top"><span class="card-rank">#${i + 1}</span><div class="card-meta"><span class="card-url">${escapeHTML(item.p.url)}</span><span class="card-score">Word count: ${item.count}</span>${squareBar(item.count)}</div></div><p class="card-body">${highlight(item.p.text, word, true)}</p></article>`
   ).join('');
-  // Step 3: Sort Surfer way by surfer score descending (ties keep data order)
+  // Step 3: Render Surfer way cards (glowing depth lens)
   const surferRanked = [...matches].sort((a, b) => b.surferScore - a.surferScore), maxScore = surferRanked[0].surferScore;
   document.getElementById('surfer-way-list').innerHTML = surferRanked.map((p, i) =>
-    renderCard(p, i + 1, p.surferScore.toFixed(1) + '% · Links in: ' + p.linksIn, maxScore > 0 ? ((p.surferScore / maxScore) * 100).toFixed(1) : '0', false, word, Math.min(i * 50, 400))
+    `<article class="card card-surfer pane-enter" data-page="${p.page}" style="animation-delay:${Math.min(i * 50, 400)}ms"><div class="card-top"><span class="card-rank">#${i + 1}</span><div class="card-meta"><span class="card-url">${escapeHTML(p.url)}</span><div class="surfer-score-row">${ringGauge(p.surferScore, maxScore)}<div class="orbit-badge"><span class="orbit-icon"></span><span>Links in: ${p.linksIn}</span></div></div></div></div><p class="card-body">${highlight(p.text, word, false)}</p></article>`
   ).join('');
-  // Step 4: Animate score bars smoothly
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    document.querySelectorAll('.bar-fill').forEach(bar => { bar.style.width = bar.dataset.width; });
-  }));
+  // Step 4: Attach 3D pointer tilt and card hover listeners
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mouseenter', () => toggleCardHighlight(card.dataset.page, true));
+    card.addEventListener('mouseleave', () => toggleCardHighlight(card.dataset.page, false));
+    if (card.classList.contains('card-surfer')) attachTilt(card);
+  });
 }
-// Perform search using first entered word
+// Execute search using the first entered word
 function search() {
-  // Decision 5: Search uses the first word typed; trim spaces; an empty search does nothing except show a gentle hint
-  const trimmed = document.getElementById('search-input').value.trim(), word = trimmed ? trimmed.split(/\s+/)[0] : '';
-  const hint = document.getElementById('hint-message');
+  // Decision 5: Search uses the first word typed, trimmed; empty search shows gentle hint
+  const trimmed = document.getElementById('search-input').value.trim(), word = trimmed ? trimmed.split(/\s+/)[0] : '', hint = document.getElementById('hint-message');
   if (!word) {
     document.getElementById('results-area').style.display = 'none';
-    hint.textContent = 'Please enter a search word or pick an example above.';
-    hint.style.display = 'block'; return;
+    hint.innerHTML = '<div class="empty-glass"><p class="empty-txt">Type a search word or select a capsule below to compare rankings.</p></div>';
+    hint.style.display = 'block'; updateMap(null); return;
   }
   currentWord = word; showResults(word);
 }
-// ---------- 5. Buttons and start-up ----------  event listeners, logo letters, first run
+// ---------- 6. Buttons and start-up ----------   listeners, pointer tilt, logo, first run
+// 3D pointer tilt on Surfer way cards (max 4 degrees)
+function attachTilt(card) {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.transform = `perspective(800px) rotateX(${(-(e.clientY - r.top - r.height / 2) / (r.height / 2) * 4).toFixed(2)}deg) rotateY(${((e.clientX - r.left - r.width / 2) / (r.width / 2) * 4).toFixed(2)}deg) translateY(-2px)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+}
 // Update status banner text
 function updateStatus() {
   document.getElementById('status-text').textContent = 'The surfer made ' + MOVES.toLocaleString() + ' moves over ' + pages.length + ' pages.';
 }
-// Initialize application on load
+// Application ignition: initialize data, SVG map, listeners, and first surfer replay
 function init() {
-  // Step 1: Animate logo letters with 40ms stagger
-  const logoEl = document.getElementById('logo'), letters = logoEl.textContent.split('');
-  const colors = ['var(--blue)', 'var(--red)', 'var(--yellow)', 'var(--blue)', '', 'var(--blue)', 'var(--red)', 'var(--yellow)', 'var(--blue)', 'var(--green)', 'var(--red)', '', 'var(--blue)', 'var(--red)', 'var(--yellow)', 'var(--green)'];
-  logoEl.innerHTML = letters.map((ch, i) => ch === ' ' ? ' ' : `<span class="logo-letter" style="color:${colors[i] || 'var(--blue)'};animation-delay:${i * 40}ms">${ch}</span>`).join('');
-  // Step 2: Read data, run surfer, and display status
+  // Step 1: Read data, run surfer, and update status
   buildPages(); runSurfer(); updateStatus();
-  // Step 3: Attach search input and button event listeners
+  // Step 2: Draw map and trigger ignition replay
+  drawMap(); replaySurfer();
+  // Step 3 & 4: Attach search and example buttons event listeners
   document.getElementById('search-btn').addEventListener('click', search);
   document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
-  // Step 4: Attach example buttons listeners
   document.querySelectorAll('.example-btn').forEach(btn => {
     btn.addEventListener('click', () => { document.getElementById('search-input').value = btn.dataset.word; search(); });
   });
-  // Step 5: Attach run surfer again button with 400ms disabled state
+  // Step 5: Run surfer again with visual replay and smooth score updates
   const runBtn = document.getElementById('run-surfer-btn');
   runBtn.addEventListener('click', () => {
     runBtn.disabled = true; runBtn.textContent = 'Surfing...';
     setTimeout(() => {
       runSurfer(); runBtn.disabled = false; runBtn.textContent = 'Run the surfer again';
-      updateStatus(); if (currentWord) showResults(currentWord);
+      updateStatus(); replaySurfer();
+      if (currentWord) showResults(currentWord); else updateMap(null);
     }, 400);
   });
 }
