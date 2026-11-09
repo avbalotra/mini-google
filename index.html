@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Google 1998</title>
+  <style>
+    /* CSS Variables */
+    :root {
+      --bg: #F7F8FA;
+      --card: #FFFFFF;
+      --ink: #14161A;
+      --muted: #6B7280;
+      --line: #E4E7EC;
+      --blue: #4285F4;
+      --red: #EA4335;
+      --yellow: #FBBC05;
+      --green: #34A853;
+      --mark: #FFE9A8;
+      --radius: 14px;
+      --shadow: 0 1px 2px rgba(20,22,26,.05), 0 6px 20px rgba(20,22,26,.05);
+    }
+
+    /* Reset and Base Styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      padding: 40px 24px 64px 24px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    /* Logo */
+    .header-area {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      font-family: "ui-rounded", "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: clamp(2.4rem, 7vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      user-select: none;
+    }
+
+    .logo-letter {
+      display: inline-block;
+      opacity: 0;
+      animation: letterRise 400ms ease-out forwards;
+    }
+
+    @keyframes letterRise {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Search Bar */
+    .search-wrap {
+      max-width: 600px;
+      margin: 0 auto 16px auto;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 110px 0 20px;
+      border-radius: 9999px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      font-size: 1rem;
+      color: var(--ink);
+      box-shadow: 0 1px 3px rgba(20,22,26,.06);
+      outline: none;
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.25), 0 2px 6px rgba(20,22,26,.06);
+    }
+
+    .search-btn {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      height: 38px;
+      padding: 0 20px;
+      border-radius: 9999px;
+      border: none;
+      background: var(--blue);
+      color: #FFFFFF;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 200ms ease, opacity 200ms ease;
+    }
+
+    .search-btn:hover {
+      background: #3367D6;
+    }
+
+    .search-btn:active {
+      background: #2A56C6;
+    }
+
+    /* Interactive Controls & Examples */
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .example-btn, .surfer-btn {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 9999px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(20,22,26,.04);
+      transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }
+
+    .example-btn:hover, .surfer-btn:hover:not(:disabled) {
+      background: #EEF1F6;
+      border-color: #D0D5DD;
+    }
+
+    .surfer-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    /* Status Line */
+    .status-text {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    /* Hint / Empty State Messages */
+    .message-card {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 1rem;
+      color: var(--muted);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Results Layout */
+    .results-grid {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 719px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    /* Column Headers */
+    .col-header {
+      margin-bottom: 24px;
+    }
+
+    .col-title {
+      font-family: "ui-rounded", "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: inline-block;
+      padding-bottom: 6px;
+      margin-bottom: 4px;
+    }
+
+    .col-old .col-title {
+      border-bottom: 3px solid #9CA3AF;
+    }
+
+    .col-surfer .col-title {
+      border-bottom: 3px solid var(--green);
+    }
+
+    .col-caption {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Result Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: cardAppear 300ms ease-out forwards;
+      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    @keyframes cardAppear {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: #D0D5DD;
+      box-shadow: 0 4px 6px rgba(20,22,26,.06), 0 10px 24px rgba(20,22,26,.08);
+    }
+
+    @keyframes oldPulse {
+      0% { border-color: var(--line); }
+      50% { border-color: #9CA3AF; }
+      100% { border-color: var(--line); }
+    }
+
+    @keyframes surferPulse {
+      0% { border-color: var(--line); }
+      50% { border-color: var(--green); }
+      100% { border-color: var(--line); }
+    }
+
+    .col-old .top-card {
+      animation: cardAppear 300ms ease-out forwards, oldPulse 700ms ease-out 350ms 1;
+    }
+
+    .col-surfer .top-card {
+      animation: cardAppear 300ms ease-out forwards, surferPulse 700ms ease-out 350ms 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .rank-badge {
+      color: var(--blue);
+      font-family: "ui-rounded", "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      line-height: 1;
+      min-width: 36px;
+    }
+
+    .card-meta {
+      flex: 1;
+    }
+
+    .card-url {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      word-break: break-all;
+      margin-bottom: 4px;
+    }
+
+    .score-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 6px;
+      background: #EEF1F6;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 600ms ease-out;
+    }
+
+    .bar-old {
+      background: #9CA3AF;
+    }
+
+    .bar-surfer {
+      background: var(--green);
+    }
+
+    .card-text {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--ink);
+      max-width: 70ch;
+      word-break: break-word;
+    }
+
+    mark {
+      background-color: var(--mark);
+      border-radius: 3px;
+      padding: 1px 3px;
+      font-weight: normal;
+      color: inherit;
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header-area">
+      <h1 class="logo" id="logo">Mini Google 1998</h1>
+    </header>
+
+    <main>
+      <div class="search-wrap">
+        <input type="text" id="search-input" class="search-input" placeholder="Search pages..." autocomplete="off">
+        <button type="button" id="search-btn" class="search-btn">Search</button>
+      </div>
+
+      <div class="controls-row">
+        <button type="button" class="example-btn" data-word="pizza">pizza</button>
+        <button type="button" class="example-btn" data-word="cricket">cricket</button>
+        <button type="button" class="example-btn" data-word="movie">movie</button>
+        <button type="button" class="example-btn" data-word="exam">exam</button>
+        <button type="button" id="run-surfer-btn" class="surfer-btn">Run the surfer again</button>
+      </div>
+
+      <p id="status-text" class="status-text"></p>
+
+      <div id="hint-message" class="message-card">
+        Search for a word (or click an example above) to compare rankings.
+      </div>
+
+      <section id="results-area" class="results-grid">
+        <div class="column col-old">
+          <div class="col-header">
+            <h2 class="col-title">Old way</h2>
+            <p class="col-caption">Counts the word</p>
+          </div>
+          <div id="old-way-list"></div>
+        </div>
+
+        <div class="column col-surfer">
+          <div class="col-header">
+            <h2 class="col-title">Surfer way</h2>
+            <p class="col-caption">Follows the links</p>
+          </div>
+          <div id="surfer-way-list"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="text/plain" id="data">
+page,url,text,links_to
+1,http://pizza-mania.com,"Best pizza in town! We love pizza, hot pizza, fresh pizza, cheese pizza, crust pizza, slice pizza, and midnight pizza.",
+2,http://city-guide.org,"A curated guide to city dining, authentic pizza spots, weekend sports, and top culinary culture.",1;3;4;6;7;8
+3,http://italian-bistro.com,"Authentic wood-fired pizza and handmade pasta recommended by top culinary critics.",2;4
+4,http://daily-cricket.com,"Live cricket score, test match commentary, pitch analysis, and world cup tournament highlights.",2;5
+5,http://cricket-fanatic.net,"Cricket cricket cricket! Batting, bowling, umpire rules, and pure cricket tournament madness.",4
+6,http://cinema-central.com,"Review of every new summer movie release, box office records, and classic film history.",2;7;8
+7,http://movie-buffs.org,"Movie movie movie! Watch your favourite ""blockbuster"" movie with movie lovers or stream a cult movie tonight.",6
+8,http://study-portal.edu,"Prepare for your final exam with revision notes, practice questions, and calm exam tips.",2;9
+9,http://exam-cram.com,"Exam exam exam! Cram every exam syllabus in 24 hours with quick exam guides and flashcards.",8;10
+10,http://campus-news.edu,"Campus news covering upcoming exam schedules, student cricket tournaments, and weekend film club.",8;2;99
+  </script>
+
+  <script>
+// ---------- Settings ----------           MOVES = 100000, BORED = 0.15
+const MOVES = 100000, BORED = 0.15;
+let pages = [], currentWord = '';
+// ---------- 1. Read the data ----------   readCSV(), build pages list, linksIn counts
+// Parse CSV lines handling quotes and escaped quotes
+function readCSV(text) {
+  const lines = text.trim().split(/\r?\n/), rows = [];
+  // Step 1: Parse each line after the header
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    let values = [], current = '', insideQuotes = false;
+    for (let c = 0; c < line.length; c++) {
+      const ch = line[c];
+      if (ch === '"') {
+        if (insideQuotes && line[c + 1] === '"') { current += '"'; c++; } else insideQuotes = !insideQuotes;
+      } else if (ch === ',' && !insideQuotes) { values.push(current); current = ''; } else current += ch;
+    }
+    values.push(current);
+    rows.push({ page: parseInt(values[0], 10), url: values[1], text: values[2], links_to: values[3] || '' });
+  }
+  return rows;
+}
+// Build structured pages and count incoming links
+function buildPages() {
+  const rows = readCSV(document.getElementById('data').textContent), pageMap = {};
+  // Step 1: Initialize page objects
+  pages = rows.map(r => {
+    const raw = r.links_to ? r.links_to.split(';').map(n => parseInt(n.trim(), 10)).filter(n => !isNaN(n)) : [];
+    const p = { page: r.page, url: r.url, text: r.text, rawLinks: raw, validLinks: [], validIndices: [], linksIn: 0, visits: 0, surferScore: 0 };
+    pageMap[p.page] = p; return p;
+  });
+  // Step 2: Validate links and count unique incoming links
+  pages.forEach(p => {
+    // Decision 3: Ignore links that point to page numbers not in the data
+    p.validLinks = p.rawLinks.filter(id => pageMap[id] !== undefined);
+    p.validIndices = p.validLinks.map(id => pages.findIndex(target => target.page === id));
+    // Decision 4: 'Links in: N' = number of DIFFERENT pages that link to that page
+    new Set(p.validLinks).forEach(destId => pageMap[destId].linksIn++);
+  });
+}
+// ---------- 2. The random surfer ----------   runSurfer()
+// Simulate random surfer moves over pages
+function runSurfer() {
+  // Step 1: Reset all visit counts
+  for (let i = 0; i < pages.length; i++) pages[i].visits = 0;
+  // Step 2: Pick an initial page at random
+  let curIndex = Math.floor(Math.random() * pages.length);
+  // Step 3: Run 100,000 steps
+  for (let step = 0; step < MOVES; step++) {
+    const cur = pages[curIndex];
+    // Decision 2: If the current page has no links, treat it as a bored jump to a random page
+    if (Math.random() < BORED || cur.validIndices.length === 0) curIndex = Math.floor(Math.random() * pages.length);
+    else curIndex = cur.validIndices[Math.floor(Math.random() * cur.validIndices.length)];
+    // Decision 1: Count the page the surfer lands on after each move (starting page is not counted)
+    pages[curIndex].visits++;
+  }
+  // Step 4: Calculate score percentages
+  for (let i = 0; i < pages.length; i++) pages[i].surferScore = (pages[i].visits / MOVES) * 100;
+}
+// ---------- 3. Ranking helpers ----------  escapeHTML(), countWord(), highlight()
+// Escape HTML special characters
+function escapeHTML(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+// Count whole-word matches ignoring case
+function countWord(text, word) {
+  if (!word) return 0;
+  const matches = text.match(new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi'));
+  return matches ? matches.length : 0;
+}
+// Highlight whole-word matches preserving original casing
+function highlight(text, word) {
+  if (!word) return escapeHTML(text);
+  return escapeHTML(text).replace(new RegExp('(\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b)', 'gi'), '<mark>$1</mark>');
+}
+// Build card HTML string
+function renderCard(p, rank, scoreLabel, barWidth, isOld, word, delay) {
+  const topClass = rank === 1 ? ' top-card' : '', barClass = isOld ? 'bar-old' : 'bar-surfer';
+  return `<article class="card${topClass}" style="animation-delay:${delay}ms"><div class="card-header"><span class="rank-badge">#${rank}</span><div class="card-meta"><span class="card-url">${escapeHTML(p.url)}</span><span class="score-label">${scoreLabel}</span><div class="bar-track"><div class="bar-fill ${barClass}" style="width:0%" data-width="${barWidth}%"></div></div></div></div><p class="card-text">${highlight(p.text, word)}</p></article>`;
+}
+// ---------- 4. Show the results ----------  showResults(), search()
+// Render results in Old way and Surfer way columns
+function showResults(word) {
+  const resultsArea = document.getElementById('results-area'), hint = document.getElementById('hint-message');
+  const matches = pages.filter(p => countWord(p.text, word) > 0);
+  // Step 1: Show funny empty state if no matches
+  if (matches.length === 0) {
+    resultsArea.style.display = 'none';
+    hint.innerHTML = `No pages found matching "<strong>${escapeHTML(word)}</strong>". Even our 1998 web crawler came up empty-handed! 🕸️`;
+    hint.style.display = 'block'; return;
+  }
+  hint.style.display = 'none'; resultsArea.style.display = 'grid';
+  // Step 2: Sort Old way by word count descending (ties keep data order)
+  const oldRanked = matches.map(p => ({ p, count: countWord(p.text, word) })).sort((a, b) => b.count - a.count);
+  const maxCount = oldRanked[0].count;
+  document.getElementById('old-way-list').innerHTML = oldRanked.map((item, i) =>
+    renderCard(item.p, i + 1, 'Word count: ' + item.count, ((item.count / maxCount) * 100).toFixed(1), true, word, Math.min(i * 50, 400))
+  ).join('');
+  // Step 3: Sort Surfer way by surfer score descending (ties keep data order)
+  const surferRanked = [...matches].sort((a, b) => b.surferScore - a.surferScore), maxScore = surferRanked[0].surferScore;
+  document.getElementById('surfer-way-list').innerHTML = surferRanked.map((p, i) =>
+    renderCard(p, i + 1, p.surferScore.toFixed(1) + '% · Links in: ' + p.linksIn, maxScore > 0 ? ((p.surferScore / maxScore) * 100).toFixed(1) : '0', false, word, Math.min(i * 50, 400))
+  ).join('');
+  // Step 4: Animate score bars smoothly
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.querySelectorAll('.bar-fill').forEach(bar => { bar.style.width = bar.dataset.width; });
+  }));
+}
+// Perform search using first entered word
+function search() {
+  // Decision 5: Search uses the first word typed; trim spaces; an empty search does nothing except show a gentle hint
+  const trimmed = document.getElementById('search-input').value.trim(), word = trimmed ? trimmed.split(/\s+/)[0] : '';
+  const hint = document.getElementById('hint-message');
+  if (!word) {
+    document.getElementById('results-area').style.display = 'none';
+    hint.textContent = 'Please enter a search word or pick an example above.';
+    hint.style.display = 'block'; return;
+  }
+  currentWord = word; showResults(word);
+}
+// ---------- 5. Buttons and start-up ----------  event listeners, logo letters, first run
+// Update status banner text
+function updateStatus() {
+  document.getElementById('status-text').textContent = 'The surfer made ' + MOVES.toLocaleString() + ' moves over ' + pages.length + ' pages.';
+}
+// Initialize application on load
+function init() {
+  // Step 1: Animate logo letters with 40ms stagger
+  const logoEl = document.getElementById('logo'), letters = logoEl.textContent.split('');
+  const colors = ['var(--blue)', 'var(--red)', 'var(--yellow)', 'var(--blue)', '', 'var(--blue)', 'var(--red)', 'var(--yellow)', 'var(--blue)', 'var(--green)', 'var(--red)', '', 'var(--blue)', 'var(--red)', 'var(--yellow)', 'var(--green)'];
+  logoEl.innerHTML = letters.map((ch, i) => ch === ' ' ? ' ' : `<span class="logo-letter" style="color:${colors[i] || 'var(--blue)'};animation-delay:${i * 40}ms">${ch}</span>`).join('');
+  // Step 2: Read data, run surfer, and display status
+  buildPages(); runSurfer(); updateStatus();
+  // Step 3: Attach search input and button event listeners
+  document.getElementById('search-btn').addEventListener('click', search);
+  document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+  // Step 4: Attach example buttons listeners
+  document.querySelectorAll('.example-btn').forEach(btn => {
+    btn.addEventListener('click', () => { document.getElementById('search-input').value = btn.dataset.word; search(); });
+  });
+  // Step 5: Attach run surfer again button with 400ms disabled state
+  const runBtn = document.getElementById('run-surfer-btn');
+  runBtn.addEventListener('click', () => {
+    runBtn.disabled = true; runBtn.textContent = 'Surfing...';
+    setTimeout(() => {
+      runSurfer(); runBtn.disabled = false; runBtn.textContent = 'Run the surfer again';
+      updateStatus(); if (currentWord) showResults(currentWord);
+    }, 400);
+  });
+}
+window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
